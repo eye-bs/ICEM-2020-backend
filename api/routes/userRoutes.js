@@ -35,7 +35,7 @@ router.post("/new", (req, res) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        var count_team = docs.length == 0 ? 1 : docs[0].user.length + 1;
+        var count_team = docs.length == 0 ? 1 : docs[0].user.length + 1 - 2;
         var num_team = count_team < 10 ? "0" + count_team : count_team;
         var new_team = "team" + num_team;
         var userData = new userCollection({
@@ -131,19 +131,19 @@ router.get("/game/time", (req, res) => {
           redisClient.get("count-time", (err, ct) => {
             if (!err) {
               var response = {
-                white_board : true,
-                start_time : st,
+                white_board: true,
+                start_time: st,
                 couter_time: ct
-              }
-              res.status(200).send(response)
-            }else{
-              res.status(500).send("Error")
+              };
+              res.status(200).send(response);
+            } else {
+              res.status(500).send("Error");
             }
           });
         }
       });
     } else {
-      res.status(200).send({white_board: false});
+      res.status(200).send({ white_board: false });
     }
   });
 });
