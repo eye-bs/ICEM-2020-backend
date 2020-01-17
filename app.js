@@ -12,6 +12,7 @@ const semifinalRoutes = require("./api/routes/semifinalRoutes");
 const gameSessionRoutes = require("./api/routes/gameSessionRoutes");
 const finalRoutes = require("./api/routes/finalRoutes");
 const checkAnswerRoutes = require("./api/routes/checkAnswerRoutes")
+const adminRoutes = require("./api/routes/adminRoutes")
 
 mongoose.connect(
   "mongodb+srv://admin:admin123@cluster0-odrr2.gcp.mongodb.net/ICEM2020?retryWrites=true&w=majority",
@@ -48,6 +49,7 @@ app.use("/semifinal", semifinalRoutes);
 app.use("/final", finalRoutes);
 app.use("/game", gameSessionRoutes);
 app.use("/check", checkAnswerRoutes);
+app.use("/admin" , adminRoutes);
 
 app.use("/health", (req, res, next) => {
   res.status(200).send("server-health");

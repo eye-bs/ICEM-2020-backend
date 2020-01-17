@@ -19,12 +19,15 @@ if (process.env.REDIS_URL) {
 const semifinalCollection = require("../models/semifinalModels");
 const gameHistoryCollection = require("../models/gameHistoryModels");
 
+//swagger
 router.post("/register/team", (req, res) => {
   var team_arr = req.body.teams;
+  var no = req.query.no;
   var count = 0;
 
   var team = new semifinalCollection({
     _id: team_arr[count],
+    no: no,
     items: {
       x2: true,
       x3: true
@@ -54,6 +57,7 @@ router.post("/register/team", (req, res) => {
   function saveTeams(team_arr) {
     var team = new semifinalCollection({
       _id: team_arr[count],
+      no: no,
       items: {
         x2: true,
         x3: true
@@ -85,6 +89,47 @@ router.post("/register/team", (req, res) => {
   }
 });
 
+router.post("/item/:team", (req, res) => {
+  var team = req.params.team;
+  var item = req.query.item;
+  var no = req.query.no;
+  var update_items;
+  var item_no = {
+    "exam.$[target].item": item
+  };
+  if (item == "x2") {
+    update_items = {
+      "items.x2": false
+    };
+  } else {
+    update_items = {
+      "items.x3": false
+    };
+  }
+
+  var to_set = Object.assign({}, update_items, item_no);
+  semifinalCollection.update(
+    {
+      _id: team
+    },
+    {
+      $set: to_set
+    },
+    {
+      multi: false,
+      arrayFilters: [{ "target._id": no }]
+    },
+    (err, data) => {
+      if (err) {
+        res.status(500).send(err.message);
+      } else {
+        var response = team + " use item " + item + " in No." + no;
+        res.status(200).send(response);
+      }
+    }
+  );
+});
+
 router.post("/prepare/game", (req, res) => {
   var no = req.query.no;
   var level = req.query.lev;
@@ -106,7 +151,9 @@ router.post("/prepare/game", (req, res) => {
         res.status(500).send(err.message);
       } else {
         if (docs.n == 0 || docs.nModified == 0) {
-          res.status(400).send('this exam is already processed use "PUT" to edit');
+          res
+            .status(400)
+            .send('this exam is already processed use "PUT" to edit');
         } else {
           gameHistoryCollection.update(
             {
@@ -137,7 +184,6 @@ router.post("/prepare/game", (req, res) => {
 
 router.post("/send/answer/:team", (req, res, next) => {
   var image;
-  var folder = req.query.r;
   var no = req.query.no;
   var teamName = req.params.team;
   var time_stamp = new Date();
@@ -219,7 +265,7 @@ router.post("/send/answer/:team", (req, res, next) => {
     });
     const params = {
       Bucket: BUCKET_NAME,
-      Key: folder + "/" + no + "/" + teamName + ".png", // File name you want to save as in S3
+      Key:   "semifinal/" + no + "/" + teamName + ".png", // File name you want to save as in S3
       Body: file.data
     };
     s3.upload(params, function(err, data) {

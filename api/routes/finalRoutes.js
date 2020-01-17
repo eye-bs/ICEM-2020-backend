@@ -211,7 +211,7 @@ router.post("/send/answer/:team", (req, res, next) => {
     });
     const params = {
       Bucket: BUCKET_NAME,
-      Key: folder + "/" + no + "/" + teamName + ".png", // File name you want to save as in S3
+      Key:  "final/" + no + "/" + teamName + ".png", // File name you want to save as in S3
       Body: file.data
     };
     s3.upload(params, function(err, data) {

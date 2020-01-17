@@ -9,12 +9,14 @@ const semifinalCollection = require("../models/semifinalModels");
 router.get("/:round", (req, res) => {
   var round = req.params.round;
   var no = req.query.no;
+  var semi_round = req.query.sr;
+  var match_condition = round == "semifinal" ? {no: parseInt(semi_round)} : {"exam._id": no}
   var db_collection =
     round == "semifinal" ? semifinalCollection : finalCollection;
   db_collection.aggregate(
     [
       {
-        $match: { "exam._id": no }
+        $match: match_condition
       },
       {
         $project: {

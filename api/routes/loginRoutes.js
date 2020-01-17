@@ -4,7 +4,7 @@ var CryptoJS = require("crypto-js");
 const mongoose = require("mongoose");
 
 const userCollection = require("../models/userModels");
-
+// swagger
 router.post("/login", (req, res) => {
   id = req.body.username;
   password = req.body.password;
@@ -51,10 +51,14 @@ router.post("/login", (req, res) => {
   }
 });
 
+// swagger
 router.post("/register", (req, res) => {
   var team = req.query.team;
   var team_name = req.body.name;
   var university = req.body.university;
+  if(team_name == undefined || university == undefined){
+    res.status(400).send("Invalid registered form")
+  }
   userCollection.update(
     { _id: team },
     {
@@ -64,7 +68,12 @@ router.post("/register", (req, res) => {
       if (err) {
         res.status(500).send(err.message);
       } else {
-        res.status(201).send("Registerd Success");
+        if (docs.n == 0){
+          res.status(404).send("team not found");
+        }else{
+          res.status(201).send("Registerd Success");
+        }
+        
       }
     }
   );

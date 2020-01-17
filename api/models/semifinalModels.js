@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var semifinalSchema = new Schema({
   _id: String,
+  no:Number,
   items:{
       x2 : Boolean,
       x3 : Boolean

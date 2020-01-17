@@ -2,10 +2,23 @@ const express = require("express");
 const router = express.Router();
 var CryptoJS = require("crypto-js");
 const mongoose = require("mongoose");
+const redis = require("redis");
+
+let redisClient;
+if (process.env.REDIS_URL) {
+  redisClient = redis.createClient(process.env.REDIS_URL);
+} else {
+  redisClient = redis.createClient();
+}
+
+const finalCollection = require("../models/finalModels");
+const semifinalCollection = require("../models/semifinalModels");
+const gameHistoryCollection = require("../models/gameHistoryModels");
 
 const userCollection = require("../models/userModels");
 const taCollection = require("../models/teacherAdminModels");
 
+//swagger
 router.post("/new", (req, res) => {
   var newPass = generatePass();
   var encrypt_pass = CryptoJS.AES.encrypt(newPass, "[6Ipkri").toString();
@@ -110,5 +123,9 @@ router.post("/new/ta", (req, res) => {
     }
   });
 });
+
+router.get("/game/time" , (req, res) => {
+
+})
 
 module.exports = router;
