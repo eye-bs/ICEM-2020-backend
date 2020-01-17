@@ -177,12 +177,44 @@ router.post("/update/score/:round", (req, res) => {
   }
 });
 
+router.get("/session/data", (req, res) => {
+  var response = {
+    white_board: "",
+    start_time: "",
+    count_time: "",
+    timeout: "",
+    exam: "",
+    round: ""
+  };
+  redisClient.get("white-board", (err, wb) => {
+    response.white_board = wb;
+  });
+  redisClient.get("start-time", (err, st) => {
+    response.start_time = st;
+  });
+  redisClient.get("count-time", (err, ct) => {
+    response.count_time = ct;
+  });
+  redisClient.get("timeout", (err, to) => {
+    response.timeout = to;
+  });
+  redisClient.get("exam", (err, ex) => {
+    response.exam = ex;
+  });
+  redisClient.get("round", (err, r) => {
+    response.round = r;
+    res.status(200).send(response);
+  });
+});
+
 router.post("/start/game/:round", (req, res) => {
   var round = req.params.round;
   var no = req.query.no;
   var set_time = parseInt(req.query.time); // seconds
+  var delay = req.query.time * 1000
   var current_time = new Date();
   redisClient.setex("start-time", 70, current_time.toISOString());
+  redisClient.setex("count-time", 70, set_time);
   current_time.setSeconds(current_time.getSeconds() + set_time);
   redisClient.setex("white-board", 3600, "true");
   redisClient.setex("timeout", 70, current_time.toISOString());
@@ -191,7 +223,7 @@ router.post("/start/game/:round", (req, res) => {
   setTimeout(() => {
     redisClient.setex("white-board", 3600, "false");
     res.status(200).send("Timeout");
-  }, set_time * 1000);
+  }, delay);
 });
 
 module.exports = router;

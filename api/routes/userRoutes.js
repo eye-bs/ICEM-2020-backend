@@ -116,16 +116,36 @@ router.post("/new/ta", (req, res) => {
       res.status(500).send(err);
     } else {
       teacherData.save();
-      adminData.save().then(() =>{
+      adminData.save().then(() => {
         res.status(201).send("Created");
       });
-     
     }
   });
 });
 
-router.get("/game/time" , (req, res) => {
-
-})
+router.get("/game/time", (req, res) => {
+  redisClient.get("white-board", (err, wb) => {
+    if (!err && wb == "true") {
+      redisClient.get("start-time", (err, st) => {
+        if (!err) {
+          redisClient.get("count-time", (err, ct) => {
+            if (!err) {
+              var response = {
+                white_board : true,
+                start_time : st,
+                couter_time: ct
+              }
+              res.status(200).send(response)
+            }else{
+              res.status(500).send("Error")
+            }
+          });
+        }
+      });
+    } else {
+      res.status(200).send({white_board: false});
+    }
+  });
+});
 
 module.exports = router;
