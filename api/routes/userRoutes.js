@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 var CryptoJS = require("crypto-js");
-const mongoose = require("mongoose");
 const redis = require("redis");
+
+const userCollection = require("../models/userModels");
 
 let redisClient;
 if (process.env.REDIS_URL) {
@@ -10,13 +11,6 @@ if (process.env.REDIS_URL) {
 } else {
   redisClient = redis.createClient();
 }
-
-const finalCollection = require("../models/finalModels");
-const semifinalCollection = require("../models/semifinalModels");
-const gameHistoryCollection = require("../models/gameHistoryModels");
-
-const userCollection = require("../models/userModels");
-const taCollection = require("../models/teacherAdminModels");
 
 //swagger
 router.post("/new", (req, res) => {
@@ -57,6 +51,10 @@ router.post("/new", (req, res) => {
       }
     }
   );
+});
+
+router.get('/profile', (req, res, next)  => {
+  res.send(req.user);
 });
 
 function generatePass() {
