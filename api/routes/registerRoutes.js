@@ -6,10 +6,9 @@ const passport = require("passport");
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const JwtStrategy = require("passport-jwt").Strategy;
 
-const SECRET = "ICEM-2020-Authentication";
 const userCollection = require("../models/userModels");
 
-router.post("/register", (req, res) => {
+router.post("/", (req, res) => {
     var team = req.query.team;
     var team_name = req.body.name;
     var university = req.body.university;
