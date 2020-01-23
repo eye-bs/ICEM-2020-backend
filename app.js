@@ -11,17 +11,19 @@ const userRoutes = require("./api/routes/userRoutes");
 const loginRoutes = require("./api/routes/loginRoutes");
 const uploadsImageRoutes = require("./api/routes/uploadImageRoutes");
 const semifinalRoutes = require("./api/routes/semifinalRoutes");
-const gameSessionRoutes = require("./api/routes/gameSessionRoutes");
+const gameSessionRoutes = require("./api/routes/mongoUpload");
 const finalRoutes = require("./api/routes/finalRoutes");
 const checkAnswerRoutes = require("./api/routes/checkAnswerRoutes");
 const adminRoutes = require("./api/routes/adminRoutes");
 const registerRoutes = require("./api/routes/registerRoutes");
+// const mongoUpload = require("./api/routes/mongoUpload")
+const methodOverride = require('method-override');
 
 mongoose.connect(
   "mongodb+srv://admin:admin123@cluster0-odrr2.gcp.mongodb.net/ICEM2020?retryWrites=true&w=majority",
   function(err) {
     if (err) throw err;
-    console.log("Connect to MongoDB Atlas successful!");
+    console.log("-----------Connect to MongoDB Atlas successful!-------------");
   }
 );
 
@@ -31,6 +33,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(busboy());
+app.use(methodOverride('_method'));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -46,6 +49,8 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static("uploads"));
+
+app.use(express.static("uploads"));
 app.use("/login", loginRoutes);
 app.use("/register", registerRoutes);
 app.use("/users",passport.authenticate('jwt', {session: false}), userRoutes);
@@ -55,6 +60,7 @@ app.use("/final", finalRoutes);
 app.use("/game", gameSessionRoutes);
 app.use("/check", checkAnswerRoutes);
 app.use("/admin", adminRoutes);
+// app.use("/images" , mongoUpload)
 
 app.use("/health", (req, res, next) => {
   res.status(200).send("server-health");
