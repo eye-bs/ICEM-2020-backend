@@ -148,9 +148,10 @@ router.get("/game/time", (req, res) => {
   });
 });
 
-router.get("/score/:team", (req, res) => {
-  var team = req.params.team;
-  var round = req.query.round;
+router.get("/score/:round", (req, res) => {
+  var user = req.user;
+  var team = user.id;
+  var round = req.params.round;
   var db_collection =
   round == "semifinal" ? semifinalCollection : finalCollection;
 
