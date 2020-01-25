@@ -4,6 +4,8 @@ var CryptoJS = require("crypto-js");
 const redis = require("redis");
 
 const userCollection = require("../models/userModels");
+const finalCollection = require("../models/finalModels");
+const semifinalCollection = require("../models/semifinalModels");
 
 let redisClient;
 if (process.env.REDIS_URL) {
@@ -53,7 +55,7 @@ router.post("/new", (req, res) => {
   );
 });
 
-router.get('/profile', (req, res, next)  => {
+router.get("/profile", (req, res, next) => {
   res.send(req.user);
 });
 
@@ -144,6 +146,35 @@ router.get("/game/time", (req, res) => {
       res.status(200).send({ white_board: false });
     }
   });
+});
+
+router.get("/score/:team", (req, res) => {
+  var team = req.params.team;
+  var round = req.query.round;
+  var db_collection =
+  round == "semifinal" ? semifinalCollection : finalCollection;
+
+  if(round == undefined  || round == "" || team == undefined || team == ""){
+    res.status(400).send("Invalid team or round")
+  }else{
+     db_collection.aggregate([
+    { $match: { _id: team } },
+    {
+      $project: {
+        _id: "$_id",
+        total_score: "$total_score"
+      }
+    }
+  ],(err,data) => {
+    if(err){
+      res.send(err);
+    }else{
+      res.status(200).send(data);
+    }
+  });
+  }
+
+ 
 });
 
 module.exports = router;
