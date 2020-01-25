@@ -170,7 +170,7 @@ router.get("/score/:round", (req, res) => {
     if(err){
       res.send(err);
     }else{
-      res.status(200).send(data);
+      res.status(200).send(data[0]);
     }
   });
   }
