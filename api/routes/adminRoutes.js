@@ -194,6 +194,7 @@ router.post("/start/game/:round", (req, res) => {
   redisClient.setex("round", 3600, round);
   setTimeout(() => {
     redisClient.setex("white-board", 3600, "false");
+    redisClient.del('exam');
     res.status(200).send("Timeout");
   }, delay);
 });

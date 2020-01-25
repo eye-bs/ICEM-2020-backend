@@ -9,7 +9,6 @@ const passport = require("passport");
 
 const userRoutes = require("./api/routes/userRoutes");
 const loginRoutes = require("./api/routes/loginRoutes");
-const uploadsImageRoutes = require("./api/routes/uploadImageRoutes");
 const semifinalRoutes = require("./api/routes/semifinalRoutes");
 const gameSessionRoutes = require("./api/routes/mongoUpload");
 const finalRoutes = require("./api/routes/finalRoutes");
@@ -55,7 +54,6 @@ app.use("/login", loginRoutes);
 app.use("/register", registerRoutes);
 app.use("/users",passport.authenticate('jwt', {session: false}), userRoutes);
 // app.use("/users", userRoutes);
-app.use("/aws", uploadsImageRoutes);
 app.use("/semifinal", semifinalRoutes);
 app.use("/final", finalRoutes);
 app.use("/game", gameSessionRoutes);

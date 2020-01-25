@@ -33,7 +33,8 @@ conn.once("open", () => {
 const storage = new GridFsStorage({
   url: mongoURI,
   file: (req, file) => {
-    var fileName = req.query.round + "_" +req.query.no+ "_"+ req.params.team + ".png";
+    var fileName =
+      req.query.round + "_" + req.query.no + "_" + req.params.team + ".png";
     return new Promise((resolve, reject) => {
       crypto.randomBytes(16, (err, buf) => {
         if (err) {
@@ -58,7 +59,7 @@ const upload = multer({
 
 router.post("/send/answer/:team", upload.single("file"), (req, res) => {
   var img = req.file;
-  var teamName = req.params.team
+  var teamName = req.params.team;
   var round = req.query.round;
   var no = req.query.no;
   var time_stamp = new Date(req.query.time);
@@ -201,6 +202,135 @@ router.get("/session/data", (req, res) => {
   });
 });
 
+router.post("/prepare/game", (req, res) => {
+  var no = req.query.no;
+  var level = req.query.lev;
+  var round = null;
+  var prepare_game_semi = {
+    _id: no,
+    lev: level,
+    item: "",
+    image: "",
+    correct: false,
+    time_stamp: ""
+  };
+  var prepare_game_final = {
+    _id: no,
+    effect: 0,
+    image: "",
+    correct: false,
+    time_stamp: ""
+  };
+  redisClient.get("round", (err, r) => {
+    round = r;
+    var db_collection =
+      round == "semifinal" ? semifinalCollection : finalCollection;
+    var prepare_game =
+      round == "semifinal" ? prepare_game_semi : prepare_game_final;
+    db_collection.updateMany(
+      { "exam._id": { $ne: no } },
+      {
+        $push: { exam: prepare_game }
+      },
+      (err, docs) => {
+        if (err) {
+          res.status(500).send(err.message);
+        } else {
+          if (docs.n == 0 || docs.nModified == 0) {
+            res
+              .status(400)
+              .send('this exam is already processed use "PUT" to edit');
+          } else {
+            redisClient.setex("exam", 3600, no);
+            redisClient.setex("round", 3600, round);
+            var response = "Round : " + round + " | Ready to play No." + no;
+            res.status(200).send(response);
+          }
+        }
+      }
+    );
+  });
+});
+
+router.post("/register/team", (req, res) => {
+  var team_arr = req.body.teams;
+  var count = 0;
+  var no = req.query.no;
+  var round;
+  var db_collection;
+  var team_final = new finalCollection({
+    _id: team_arr[count],
+    total_score: 200,
+    exam: []
+  });
+
+  var team_semi = new semifinalCollection({
+    _id: team_arr[count],
+    no: no,
+    items: {
+      x2: true,
+      x3: true
+    },
+    total_score: 0,
+    exam: []
+  });
+
+  var team;
+
+  redisClient.get("round", (err, r) => {
+    round = r;
+    if (round == null) {
+      res.status(400).send("Invalid ROUND");
+    } else {
+      db_collection =
+        round == "semifinal" ? semifinalCollection : finalCollection;
+      team = round == "semifinal" ? team_semi : team_final;
+      db_collection.find((err, data) => {
+        if (err) {
+          res.status(500).send(err.message);
+        } else {
+          team
+            .save()
+            .then(() => {
+              if (count < team_arr.length) {
+                count++;
+                saveTeams(team_arr);
+              }
+            })
+            .catch(err => {
+              res.status(500).json({ message_out: err.message });
+            });
+        }
+      });
+    }
+  });
+  function saveTeams(team_arr) {
+    if (count < team_arr.length) {
+      db_collection.find((err, data) => {
+        if (err) {
+          res.status(500).send(err.message);
+        } else {
+          team
+            .save()
+            .then(() => {
+              count++;
+              saveTeams(team_arr);
+            })
+            .catch(err => {
+              res.status(500).json({ message_in: err.message });
+            });
+        }
+      });
+    } else {
+      var response =
+        team_arr.toString() +
+        " ready to play " +
+        round +
+        " round, create player successfully";
+      res.status(201).send(response);
+    }
+  }
+});
 
 router.post("/control", async (req, res) => {
   var white_board = req.query.wb;
@@ -275,6 +405,5 @@ router.post("/create/his-collection", (req, res) => {
     }
   });
 });
-
 
 module.exports = router;
