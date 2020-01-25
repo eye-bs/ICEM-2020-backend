@@ -20,74 +20,74 @@ const semifinalCollection = require("../models/semifinalModels");
 const gameHistoryCollection = require("../models/gameHistoryModels");
 
 //swagger
-router.post("/register/team", (req, res) => {
-  var team_arr = req.body.teams;
-  var no = req.query.no;
-  var count = 0;
+// router.post("/register/team", (req, res) => {
+//   var team_arr = req.body.teams;
+//   var no = req.query.no;
+//   var count = 0;
 
-  var team = new semifinalCollection({
-    _id: team_arr[count],
-    no: no,
-    items: {
-      x2: true,
-      x3: true
-    },
-    total_score: 0,
-    exam: []
-  });
+//   var team = new semifinalCollection({
+//     _id: team_arr[count],
+//     no: no,
+//     items: {
+//       x2: true,
+//       x3: true
+//     },
+//     total_score: 0,
+//     exam: []
+//   });
 
-  semifinalCollection.find((err, data) => {
-    if (err) {
-      res.status(500).send(err.message);
-    } else {
-      team
-        .save()
-        .then(() => {
-          if (count < team_arr.length) {
-            count++;
-            saveTeams(team_arr);
-          }
-        })
-        .catch(err => {
-          res.status(500).json({ message_out: err.message });
-        });
-    }
-  });
+//   semifinalCollection.find((err, data) => {
+//     if (err) {
+//       res.status(500).send(err.message);
+//     } else {
+//       team
+//         .save()
+//         .then(() => {
+//           if (count < team_arr.length) {
+//             count++;
+//             saveTeams(team_arr);
+//           }
+//         })
+//         .catch(err => {
+//           res.status(500).json({ message_out: err.message });
+//         });
+//     }
+//   });
 
-  function saveTeams(team_arr) {
-    var team = new semifinalCollection({
-      _id: team_arr[count],
-      no: no,
-      items: {
-        x2: true,
-        x3: true
-      },
-      total_score: 0,
-      exam: []
-    });
-    if (count < team_arr.length) {
-      semifinalCollection.find((err, data) => {
-        if (err) {
-          res.status(500).send(err.message);
-        } else {
-          team
-            .save()
-            .then(() => {
-              count++;
-              saveTeams(team_arr);
-            })
-            .catch(err => {
-              res.status(500).json({ message_in: err.message });
-            });
-        }
-      });
-    } else {
-      var response =
-        team_arr.toString() + " ready to play, create player successfully";
-      res.status(201).send(response);
-    }
-  }
-});
+//   function saveTeams(team_arr) {
+//     var team = new semifinalCollection({
+//       _id: team_arr[count],
+//       no: no,
+//       items: {
+//         x2: true,
+//         x3: true
+//       },
+//       total_score: 0,
+//       exam: []
+//     });
+//     if (count < team_arr.length) {
+//       semifinalCollection.find((err, data) => {
+//         if (err) {
+//           res.status(500).send(err.message);
+//         } else {
+//           team
+//             .save()
+//             .then(() => {
+//               count++;
+//               saveTeams(team_arr);
+//             })
+//             .catch(err => {
+//               res.status(500).json({ message_in: err.message });
+//             });
+//         }
+//       });
+//     } else {
+//       var response =
+//         team_arr.toString() + " ready to play, create player successfully";
+//       res.status(201).send(response);
+//     }
+//   }
+// });
 
 router.post("/item/:team", (req, res) => {
   var team = req.params.team;
@@ -130,57 +130,57 @@ router.post("/item/:team", (req, res) => {
   );
 });
 
-router.post("/prepare/game", (req, res) => {
-  var no = req.query.no;
-  var level = req.query.lev;
-  var prepare_game = {
-    _id: no,
-    lev: level,
-    item: "",
-    image: "",
-    correct: false,
-    time_stamp: ""
-  };
-  semifinalCollection.updateMany(
-    { "exam._id": { $ne: no } },
-    {
-      $push: { exam: prepare_game }
-    },
-    (err, docs) => {
-      if (err) {
-        res.status(500).send(err.message);
-      } else {
-        if (docs.n == 0 || docs.nModified == 0) {
-          res
-            .status(400)
-            .send('this exam is already processed use "PUT" to edit');
-        } else {
-          gameHistoryCollection.update(
-            {
-              $push: {
-                semi: {
-                  _id: no,
-                  level: level,
-                  start_time: ""
-                }
-              }
-            },
-            (err, data) => {
-              if (err) {
-                res.status(500).send(err.message);
-              } else {
-                redisClient.setex("exam", 3600, no);
-                redisClient.setex("round", 3600, "semifinal");
-                var response = "Round : semifinal | Ready to play No." + no;
-                res.status(200).send(response);
-              }
-            }
-          );
-        }
-      }
-    }
-  );
-});
+// router.post("/prepare/game", (req, res) => {
+//   var no = req.query.no;
+//   var level = req.query.lev;
+//   var prepare_game = {
+//     _id: no,
+//     lev: level,
+//     item: "",
+//     image: "",
+//     correct: false,
+//     time_stamp: ""
+//   };
+//   semifinalCollection.updateMany(
+//     { "exam._id": { $ne: no } },
+//     {
+//       $push: { exam: prepare_game }
+//     },
+//     (err, docs) => {
+//       if (err) {
+//         res.status(500).send(err.message);
+//       } else {
+//         if (docs.n == 0 || docs.nModified == 0) {
+//           res
+//             .status(400)
+//             .send('this exam is already processed use "PUT" to edit');
+//         } else {
+//           gameHistoryCollection.update(
+//             {
+//               $push: {
+//                 semi: {
+//                   _id: no,
+//                   level: level,
+//                   start_time: ""
+//                 }
+//               }
+//             },
+//             (err, data) => {
+//               if (err) {
+//                 res.status(500).send(err.message);
+//               } else {
+//                 redisClient.setex("exam", 3600, no);
+//                 redisClient.setex("round", 3600, "semifinal");
+//                 var response = "Round : semifinal | Ready to play No." + no;
+//                 res.status(200).send(response);
+//               }
+//             }
+//           );
+//         }
+//       }
+//     }
+//   );
+// });
 
 router.post("/send/answer/:team", (req, res, next) => {
   var image;
