@@ -241,8 +241,8 @@ router.post("/prepare/game", (req, res) => {
               .status(400)
               .send('this exam is already processed use "PUT" to edit');
           } else {
-            redisClient.setex("exam", 3600, no);
-            redisClient.setex("round", 3600, round);
+            redisClient.setex("exam", 7200, no);
+            redisClient.setex("round", 7200, round);
             var response = "Round : " + round + " | Ready to play No." + no;
             res.status(200).send(response);
           }

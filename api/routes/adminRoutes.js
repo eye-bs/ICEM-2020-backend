@@ -177,26 +177,39 @@ router.post("/update/score/:round", (req, res) => {
   }
 });
 
+router.post("/set/session/:event", (req, res) => {
+  var event = req.params.event;
+  var timeout = req.query.timeout;
+  var value = req.query.value
+  redisClient.setex(event, timeout, value);
+  redisClient.get(event, (err, v) => {
+    var response = "set " + event + " to " + v ;
+    res.status(200).send(response);
+  })
+ 
+});
 
-
-router.post("/start/game/:round", (req, res) => {
-  var round = req.params.round;
-  var no = req.query.no;
-  var set_time = parseInt(req.query.time); // seconds
-  var delay = req.query.time * 1000
-  var current_time = new Date();
-  redisClient.setex("start-time", 70, current_time.toISOString());
-  redisClient.setex("count-time", 70, set_time);
-  current_time.setSeconds(current_time.getSeconds() + set_time);
-  redisClient.setex("white-board", 3600, "true");
-  redisClient.setex("timeout", 70, current_time.toISOString());
-  redisClient.setex("exam", 3600, no);
-  redisClient.setex("round", 3600, round);
-  setTimeout(() => {
-    redisClient.setex("white-board", 3600, "false");
-    redisClient.del('exam');
-    res.status(200).send("Timeout");
-  }, delay);
+router.post("/start/game", (req, res) => {
+  var round;
+  redisClient.get("round", (err, r) => {
+    round = r;
+    var no = req.query.no;
+    var set_time = parseInt(req.query.time); // seconds
+    var delay = req.query.time * 1000;
+    var current_time = new Date();
+    redisClient.setex("start-time", 70, current_time.toISOString());
+    redisClient.setex("count-time", 70, set_time);
+    current_time.setSeconds(current_time.getSeconds() + set_time);
+    redisClient.setex("white-board", 3600, "true");
+    redisClient.setex("timeout", 70, current_time.toISOString());
+    redisClient.setex("exam", 3600, no);
+    redisClient.setex("round", 7200, round);
+    res.status(200).send("GAME START!!!");
+    setTimeout(() => {
+      redisClient.setex("white-board", 3600, "false");
+      redisClient.del("exam");
+    }, delay);
+  });
 });
 
 module.exports = router;
