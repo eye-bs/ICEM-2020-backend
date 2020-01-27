@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  db:
+    container_name: icem-db
+    image: mongo
+    volumes:
+      - icem_db:/data/db
+    ports:
+      - '2277:2277'
+    environment:
+      - TZ=Asia/Bangkok
+      
+volumes:
+  icem_db:

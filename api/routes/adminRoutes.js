@@ -207,7 +207,7 @@ router.post("/start/game", (req, res) => {
     res.status(200).send("GAME START!!!");
     setTimeout(() => {
       redisClient.setex("white-board", 3600, "false");
-      redisClient.del("exam");
+      redisClient.del("exam");   
     }, delay);
   });
 });

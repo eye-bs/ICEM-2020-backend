@@ -17,12 +17,13 @@ const adminRoutes = require("./api/routes/adminRoutes");
 const registerRoutes = require("./api/routes/registerRoutes");
 // const mongoUpload = require("./api/routes/mongoUpload")
 const methodOverride = require('method-override');
-
+//const dburl = "68.183.230.159"
+const dburl = "icem-db"
 mongoose.connect(
-  "mongodb+srv://admin:admin123@cluster0-odrr2.gcp.mongodb.net/ICEM2020?retryWrites=true&w=majority",
+  "mongodb://" + dburl, 
   function(err) {
     if (err) throw err;
-    console.log("-----------Connect to MongoDB Atlas successful!-------------");
+    console.log("----------------Connect to MongoDB at " + dburl + " successful!----------------");
   }
 );
 
