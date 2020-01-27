@@ -20,14 +20,14 @@ const methodOverride = require('method-override');
 //const dburl = "68.183.230.159"
 const dburl = "icem-db"
 mongoose.connect(
-  "mongodb://" + dburl, 
+  "mongodb://" + dburl + "/ICEM2020", 
   function(err) {
     if (err) throw err;
     console.log("----------------Connect to MongoDB at " + dburl + " successful!----------------");
   }
 );
 
-require('./api/configs/passport');
+// require('./api/configs/passport');
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -53,8 +53,8 @@ app.use(express.static("uploads"));
 app.use(express.static("uploads"));
 app.use("/login", loginRoutes);
 app.use("/register", registerRoutes);
-app.use("/users",passport.authenticate('jwt', {session: false}), userRoutes);
-// app.use("/users", userRoutes);
+// app.use("/users",passport.authenticate('jwt', {session: false}), userRoutes);
+app.use("/users", userRoutes);
 app.use("/semifinal", semifinalRoutes);
 app.use("/final", finalRoutes);
 app.use("/game", gameSessionRoutes);

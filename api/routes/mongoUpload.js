@@ -9,11 +9,9 @@ const Grid = require("gridfs-stream");
 const redis = require("redis");
 
 let redisClient;
-if (process.env.REDIS_URL) {
-  redisClient = redis.createClient("redis://68.183.230.159");
-} else {
-  redisClient = redis.createClient();
-}
+
+  redisClient = redis.createClient("6379","redis");
+
 
 const mongoURI =
   "mongodb+srv://admin:admin123@cluster0-odrr2.gcp.mongodb.net/ICEM2020?retryWrites=true&w=majority";

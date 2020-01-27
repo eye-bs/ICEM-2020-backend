@@ -4,11 +4,8 @@ const mongoose = require("mongoose");
 const redis = require("redis");
 
 let redisClient;
-if (process.env.REDIS_URL) {
-  redisClient = redis.createClient("redis://68.183.230.159");
-} else {
-  redisClient = redis.createClient();
-}
+redisClient = redis.createClient("6379","redis");
+
 
 const finalCollection = require("../models/finalModels");
 const semifinalCollection = require("../models/semifinalModels");

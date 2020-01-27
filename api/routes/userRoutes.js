@@ -8,11 +8,7 @@ const finalCollection = require("../models/finalModels");
 const semifinalCollection = require("../models/semifinalModels");
 
 let redisClient;
-if (process.env.REDIS_URL) {
-  redisClient = redis.createClient("redis://68.183.230.159");
-} else {
-  redisClient = redis.createClient();
-}
+  redisClient = redis.createClient("6379","redis");
 
 //swagger
 router.post("/new", (req, res) => {
@@ -31,7 +27,7 @@ router.post("/new", (req, res) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        var count_team = docs.length == 0 ? 1 : docs[0].user.length + 1 - 2;
+        var count_team = docs.length < 0 ? 1 : docs[0].user.length + 1 - 3;
         var num_team = count_team < 10 ? "0" + count_team : count_team;
         var new_team = "team" + num_team;
         var userData = new userCollection({
@@ -94,11 +90,16 @@ router.get("/all/login", (req, res) => {
 router.post("/new/ta", (req, res) => {
   var teacher_pass = generatePass();
   var admin_pass = generatePass();
+  var dev_pass = "123456"
   var encrypt_teacher_pass = CryptoJS.AES.encrypt(
     teacher_pass,
     "[6Ipkri"
   ).toString();
   var encrypt_admin_pass = CryptoJS.AES.encrypt(
+    admin_pass,
+    "[6Ipkri"
+  ).toString();
+  var encrypt_dev_pass = CryptoJS.AES.encrypt(
     admin_pass,
     "[6Ipkri"
   ).toString();
@@ -110,6 +111,10 @@ router.post("/new/ta", (req, res) => {
   var adminData = new userCollection({
     _id: "admin",
     password: encrypt_admin_pass
+  });
+  var adminData = new userCollection({
+    _id: "dev",
+    password: encrypt_dev_pass
   });
   userCollection.find((err, docs) => {
     if (err) {

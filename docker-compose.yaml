@@ -1,5 +1,9 @@
 version: '3.7'
 services:
+  redis:
+    image: 'bitnami/redis:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
   api:
     container_name: icem-api
     restart: always
@@ -11,7 +15,3 @@ services:
       - '8081:8081'
     environment:
       - TZ=Asia/Bangkok
-  redis:
-    image: 'bitnami/redis:latest'
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
