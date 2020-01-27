@@ -41,9 +41,10 @@ passport.use(
               var db_pass = user.password;
               var bytes = CryptoJS.AES.decrypt(db_pass, "[6Ipkri");
               var decrypt_password = bytes.toString(CryptoJS.enc.Utf8);
+              console.log("db_pass = " , decrypt_password , "\n pass_api = " , password);
               if (password == decrypt_password) {
                 var returnJSON;
-                if (id.includes("team")) {
+                if (id.includes("team")|| id.includes("dev")) {
                   returnJSON = {
                     id: id,
                     team_name: user.team_name,
