@@ -3,7 +3,11 @@ services:
   redis:
     image: 'bitnami/redis:latest'
     environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    volumes:
+      - 'redis_data:/bitnami/redis/data'
   api:
     container_name: icem-api
     restart: always
@@ -15,3 +19,7 @@ services:
       - '8081:8081'
     environment:
       - TZ=Asia/Bangkok
+
+volumes:
+  redis_data:
+    driver: local
