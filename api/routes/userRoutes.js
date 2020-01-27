@@ -110,7 +110,9 @@ router.post("/new/ta", (req, res) => {
   });
   var adminData = new userCollection({
     _id: "admin",
-    password: encrypt_admin_pass
+    password: encrypt_admin_pass,
+    team_name: "",
+    university: ""
   });
   var adminData = new userCollection({
     _id: "dev",
@@ -121,6 +123,7 @@ router.post("/new/ta", (req, res) => {
       res.status(500).send(err);
     } else {
       teacherData.save();
+      adminData.save();
       adminData.save().then(() => {
         res.status(201).send("Created");
       });
