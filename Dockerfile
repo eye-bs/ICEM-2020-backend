@@ -1,13 +1,13 @@
 FROM node:12
 
-# WORKDIR /usr/src/app
+WORKDIR /usr/src/app
 
-# COPY package*.json ./
+COPY package*.json ./
 
-# RUN npm install
+RUN npm install
 
-# COPY . .
+COPY . .
 
-# EXPOSE 8080
+EXPOSE 8081
 
-# CMD ["npm", "start"]
+CMD ["npm", "start"]
