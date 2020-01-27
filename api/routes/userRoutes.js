@@ -8,7 +8,7 @@ const finalCollection = require("../models/finalModels");
 const semifinalCollection = require("../models/semifinalModels");
 
 let redisClient;
-  redisClient = redis.createClient("6379","redis");
+redisClient = redis.createClient("6379", "redis");
 
 //swagger
 router.post("/new", (req, res) => {
@@ -90,7 +90,7 @@ router.get("/all/login", (req, res) => {
 router.post("/new/ta", (req, res) => {
   var teacher_pass = generatePass();
   var admin_pass = generatePass();
-  var dev_pass = "123456"
+  var dev_pass = "123456";
   var encrypt_teacher_pass = CryptoJS.AES.encrypt(
     teacher_pass,
     "[6Ipkri"
@@ -99,10 +99,7 @@ router.post("/new/ta", (req, res) => {
     admin_pass,
     "[6Ipkri"
   ).toString();
-  var encrypt_dev_pass = CryptoJS.AES.encrypt(
-    admin_pass,
-    "[6Ipkri"
-  ).toString();
+  var encrypt_dev_pass = CryptoJS.AES.encrypt(dev_pass, "[6Ipkri").toString();
 
   var teacherData = new userCollection({
     _id: "teacher",
@@ -111,7 +108,6 @@ router.post("/new/ta", (req, res) => {
   var adminData = new userCollection({
     _id: "admin",
     password: encrypt_admin_pass
-   
   });
   var devData = new userCollection({
     _id: "dev",
@@ -162,29 +158,30 @@ router.get("/score/:round", (req, res) => {
   var team = user.id;
   var round = req.params.round;
   var db_collection =
-  round == "semifinal" ? semifinalCollection : finalCollection;
+    round == "semifinal" ? semifinalCollection : finalCollection;
 
-  if(round == undefined  || round == "" || team == undefined || team == ""){
-    res.status(400).send("Invalid team or round")
-  }else{
-     db_collection.aggregate([
-    { $match: { _id: team } },
-    {
-      $project: {
-        _id: "$_id",
-        total_score: "$total_score"
+  if (round == undefined || round == "" || team == undefined || team == "") {
+    res.status(400).send("Invalid team or round");
+  } else {
+    db_collection.aggregate(
+      [
+        { $match: { _id: team } },
+        {
+          $project: {
+            _id: "$_id",
+            total_score: "$total_score"
+          }
+        }
+      ],
+      (err, data) => {
+        if (err) {
+          res.send(err);
+        } else {
+          res.status(200).send(data[0]);
+        }
       }
-    }
-  ],(err,data) => {
-    if(err){
-      res.send(err);
-    }else{
-      res.status(200).send(data[0]);
-    }
-  });
+    );
   }
-
- 
 });
 
 module.exports = router;
