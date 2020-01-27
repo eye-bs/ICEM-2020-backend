@@ -27,7 +27,7 @@ mongoose.connect(
   }
 );
 
-// require('./api/configs/passport');
+require('./api/configs/passport');
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -53,8 +53,8 @@ app.use(express.static("uploads"));
 app.use(express.static("uploads"));
 app.use("/login", loginRoutes);
 app.use("/register", registerRoutes);
-// app.use("/users",passport.authenticate('jwt', {session: false}), userRoutes);
-app.use("/users", userRoutes);
+app.use("/users",passport.authenticate('jwt', {session: false}), userRoutes);
+// app.use("/users", userRoutes);
 app.use("/semifinal", semifinalRoutes);
 app.use("/final", finalRoutes);
 app.use("/game", gameSessionRoutes);
