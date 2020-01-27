@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const redis = require("redis");
 let redisClient;
 if (process.env.REDIS_URL) {
-  redisClient = redis.createClient(process.env.REDIS_URL);
+  redisClient = redis.createClient("redis://68.183.230.159");
 } else {
   redisClient = redis.createClient();
 }

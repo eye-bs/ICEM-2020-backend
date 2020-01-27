@@ -11,7 +11,7 @@ const SECRET = "PFCiu3Dyg1tfA4D7D1evTRcGOeIQvg5fkDEAZnSy";
 
 let redisClient;
 if (process.env.REDIS_URL) {
-  redisClient = redis.createClient(process.env.REDIS_URL);
+  redisClient = redis.createClient("redis://68.183.230.159");
 } else {
   redisClient = redis.createClient();
 }
