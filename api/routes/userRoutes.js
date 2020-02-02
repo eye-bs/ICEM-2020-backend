@@ -88,46 +88,7 @@ router.get("/all/login", (req, res) => {
   });
 });
 
-router.post("/new/ta", (req, res) => {
-  var teacher_pass = "123456";
-  var admin_pass = "123456";
-  var dev_pass = "123456";
-  var encrypt_teacher_pass = CryptoJS.AES.encrypt(
-    teacher_pass,
-    "[6Ipkri"
-  ).toString();
-  var encrypt_admin_pass = CryptoJS.AES.encrypt(
-    admin_pass,
-    "[6Ipkri"
-  ).toString();
-  var encrypt_dev_pass = CryptoJS.AES.encrypt(dev_pass, "[6Ipkri").toString();
 
-  var teacherData = new userCollection({
-    _id: "teacher",
-    password: encrypt_teacher_pass
-  });
-  var adminData = new userCollection({
-    _id: "admin",
-    password: encrypt_admin_pass
-  });
-  var devData = new userCollection({
-    _id: "dev",
-    password: encrypt_dev_pass,
-    team_name: "",
-    university: ""
-  });
-  userCollection.find((err, docs) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      teacherData.save();
-      adminData.save();
-      devData.save().then(() => {
-        res.status(201).send("Created");
-      });
-    }
-  });
-});
 
 router.get("/game/time", (req, res) => {
   redisClient.get("white-board", (err, wb) => {
