@@ -2,11 +2,12 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const redis = require("redis");
+var CryptoJS = require("crypto-js");
 
 let redisClient;
 redisClient = redis.createClient("6379","redis");
 
-
+const userCollection = require("../models/userModels");
 const finalCollection = require("../models/finalModels");
 const semifinalCollection = require("../models/semifinalModels");
 const gameHistoryCollection = require("../models/gameHistoryModels");
