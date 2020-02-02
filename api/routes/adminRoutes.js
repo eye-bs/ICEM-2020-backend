@@ -183,7 +183,6 @@ router.post("/set/session/:event", (req, res) => {
     var response = "set " + event + " to " + v ;
     res.status(200).send(response);
   })
- 
 });
 
 router.post("/start/game", (req, res) => {

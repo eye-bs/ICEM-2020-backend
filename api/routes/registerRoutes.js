@@ -12,13 +12,14 @@ router.post("/", (req, res) => {
     var team = req.query.team;
     var team_name = req.body.name;
     var university = req.body.university;
-    if (team_name == undefined || university == undefined) {
+    var country = req.body.country;
+    if (team_name == undefined || university == undefined || country == undefined) {
       res.status(400).send("Invalid registered form");
     }
     userCollection.update(
       { _id: team },
       {
-        $set: { team_name: team_name, university: university }
+        $set: { team_name: team_name, university: university,country: country}
       },
       (err, docs) => {
         if (err) {

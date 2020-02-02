@@ -12,7 +12,8 @@ redisClient = redis.createClient("6379", "redis");
 
 //swagger
 router.post("/new", (req, res) => {
-  var newPass = generatePass();
+  // var newPass = generatePass();
+  var newPass = "123456";
   var encrypt_pass = CryptoJS.AES.encrypt(newPass, "[6Ipkri").toString();
   userCollection.aggregate(
     [
@@ -88,8 +89,8 @@ router.get("/all/login", (req, res) => {
 });
 
 router.post("/new/ta", (req, res) => {
-  var teacher_pass = generatePass();
-  var admin_pass = generatePass();
+  var teacher_pass = "123456";
+  var admin_pass = "123456";
   var dev_pass = "123456";
   var encrypt_teacher_pass = CryptoJS.AES.encrypt(
     teacher_pass,

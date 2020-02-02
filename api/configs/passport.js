@@ -41,10 +41,15 @@ passport.use(
               var db_pass = user.password;
               var bytes = CryptoJS.AES.decrypt(db_pass, "[6Ipkri");
               var decrypt_password = bytes.toString(CryptoJS.enc.Utf8);
-              console.log("db_pass = " , decrypt_password , "\n pass_api = " , password);
+              console.log(
+                "db_pass = ",
+                decrypt_password,
+                "\n pass_api = ",
+                password
+              );
               if (password == decrypt_password) {
                 var returnJSON;
-                if (id.includes("team")|| id.includes("dev")) {
+                if (id.includes("team") || id.includes("dev")) {
                   returnJSON = {
                     id: id,
                     team_name: user.team_name,
@@ -83,7 +88,7 @@ passport.use(
     },
     (jwtPayload, cb) => {
       try {
-        console.log(jwtPayload)
+        console.log(jwtPayload);
         userCollection.findOne({ _id: jwtPayload.id }, (err, docs) => {
           if (docs.length != 0) {
             return cb(null, jwtPayload);
