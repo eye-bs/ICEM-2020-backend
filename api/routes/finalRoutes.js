@@ -5,9 +5,6 @@ const mongoose = require("mongoose");
 const redis = require("redis");
 const Busboy = require("busboy");
 
-const BUCKET_NAME = "icem2020";
-const ID = "AKIAIUFOMVHDUGAIY5UQ";
-const SECRET = "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";
 
 let redisClient;
   redisClient = redis.createClient("6379","redis");
